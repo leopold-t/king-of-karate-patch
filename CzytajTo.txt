@@ -1,0 +1,184 @@
+King of Karate - Chipset patch v1.0 (tla OpalVision na OCS/ECS/AGA)
+====================================================================
+
+Autor:   Leopold "Leon" Tupalski, TULAB
+E-mail:  leopoldtupalski@yahoo.com
+
+Gra King of Karate (Centaur 1992) byla dolaczana do karty OpalVision
+i wyswietlala tla 24-bit przez te karte. Na zwyklej Amidze widac bylo
+tylko zawodnikow na czarnym tle. Ten zestaw przerabia gre tak, zeby
+wszystkie obrazy byly wyswietlane przez sam chipset Amigi:
+
+  - walka: przewijana panorama na calej wysokosci obrazu w EHB
+    (64 kolory, polprzezroczyste cienie), HAM6 albo AGA (256 kolorow
+    z palety 24-bit, cienie; tylko A1200/A4000/CD32); paski energii
+    i punkty na tle scenerii (jak w oryginale); zawodnicy na tej samej
+    wysokosci co w oryginale; we Francji zawodnicy przechodza ZA
+    murkami na pierwszym planie,
+  - ekran tytulowy i ekran rekordow (ze zdjeciem pagody pod
+    napisami) w EHB, HAM6 albo AGA,
+  - gra z komputerem (3 poziomy trudnosci) i tryb demo (komputer
+    kontra komputer),
+  - ekran startowy z wyborem trybu i poziomu,
+  - sterowanie joystickiem i/lub klawiatura,
+  - wyjscie do Workbencha: Amiga + Q,
+  - dziala na AGA i z przeniesionym VBR (patrz nizej).
+
+To nieoficjalna latka fanowska, niezwiazana z Centaur ani z producentem
+OpalVision.
+
+ZESTAW NIE ZAWIERA ZADNYCH PLIKOW GRY. Potrzebna jest wlasna kopia
+oryginalu (dyskietki King of Karate dolaczane do OpalVision).
+Zestaw zawiera tylko nowy kod (latki) i narzedzie, ktore przerabia
+pliki uzytkownika.
+
+Wymagania
+---------
+  Na PC (do przerobienia plikow):  Python 3.8+ i numpy
+                                   (pip install numpy)
+  Na Amidze:
+    ehb / ham : OCS/ECS/AGA, 1 MB Chip RAM + ok. 1 MB Fast RAM
+                (albo 2 MB Chip RAM bez Fast RAM, np. A1200, CD32)
+    aga       : chipset AGA (A1200 / A4000 / CD32), 2 MB Chip RAM
+  Biblioteki OpalVision (opal.library itp.) NIE sa potrzebne.
+
+Uzycie
+------
+  1. Skopiuj pliki gry z dyskietek do jednego katalogu na PC
+     (KARATE, TITLE, HISCORE, loader.exe, animframes.dat,
+      house1.dat ... beach2.dat, titles.dat, hscore.dat, ...).
+  2. Uruchom (katalog wynikowy musi byc inny niz katalog z gra):
+       python3 kokpatch.py <katalog z gra> <katalog wynikowy>
+     Windows: zainstaluj Pythona z python.org (zaznacz "Add Python
+     to PATH"), w cmd wpisz  pip install numpy  a potem np.:
+       python kokpatch.py C:\KoK_oryginal C:\KoK_EHB --mode ehb
+     opcje:
+       --mode ehb|ham|aga        tla walk (domyslnie ehb; aga - tylko
+                                 dla A1200/A4000/CD32)
+       --title-mode ehb|ham|aga  ekran tytulowy i ekran rekordow
+                                 (domyslnie jak --mode)
+  3. Skopiuj katalog wynikowy na Amige i uruchom ikone KingOfKarate
+     (albo w Shellu: cd <katalog>  Execute KingOfKarate).
+     Pliki *.dat (stare obrazy OpalVision) i animframes.dat nie sa juz
+     potrzebne - mozna je usunac z katalogu wynikowego.
+
+  Narzedzie sprawdza sumy SHA-256 plikow - jesli masz inna wersje gry,
+  przerwie prace (mozna wymusic opcja --force, bez gwarancji).
+  Na koncu porownuje wynik z wersja wzorcowa tego wydania.
+
+Ekran startowy
+--------------
+  Pojawia sie przed oryginalnym menu wyboru scenerii (F1/F2/F3).
+  Joystick w porcie 2 albo klawisze kursora:
+    gora / dol      tryb: 2 graczy / Ty (lewy) vs komputer /
+                    komputer vs Ty (prawy) / demo (komputer vs komputer)
+    lewo / prawo    poziom: latwy / normalny / trudny
+    Fire / spacja   dalej - do wyboru scenerii (F1 / F2 / F3)
+  Fire albo spacja na ekranie wyboru scenerii wraca do ekranu
+  startowego. Shift i Alt dzialaja jak Fire - rowniez na liscie
+  rekordow (po wpisaniu imienia i zatwierdzeniu klawiszem Return).
+  Wybor jest pamietany do wylaczenia komputera.
+
+  Gdy wygra komputer, sam wpisuje sie na liste rekordow jako AMIGA
+  i po chwili przechodzi dalej. W trybie demo komputer sam wybiera
+  scenerie - gra kreci sie bez obslugi (Fire przerywa).
+
+  Wyjscie z gry do Workbencha: Amiga + Q (lewa lub prawa Amiga).
+  Dziala na ekranie tytulowym, w walce i na ekranie rekordow.
+
+Sterowanie
+----------
+  Joystick i klawiatura dzialaja jednoczesnie:
+                     lewy zawodnik           prawy zawodnik
+    joystick         port 2                  port 1 (port myszy)
+    klawiatura       W A S D +               klawisze kursora +
+                     lewy Shift / lewy Alt   prawy Shift / prawy Alt
+  Shift albo Alt = fire, skosy = dwa klawisze naraz. W grze
+  z komputerem oba zestawy klawiszy i joystick w porcie 2 steruja
+  Twoim zawodnikiem (takze gdy grasz prawym). Myszka w porcie 1 daje
+  przypadkowe ruchy prawego zawodnika - przy grze we dwoch
+  z klawiatury lepiej ja odlaczyc.
+  "Przod" = strona, w ktora zawodnik jest zwrocony. Zawodnik sam sie
+  nie obraca - sluzy do tego fire + tyl.
+
+    przod                   krok do przodu
+    tyl                     krok do tylu
+    gora + przod            prosty cios piescia
+    dol + przod             niski cios piescia (w korpus)
+    dol + tyl               blok (trzymany)
+    gora                    postawa / unik
+    fire + gora             palce w oczy
+    fire + gora + przod     wysokie kopniecie
+    fire + przod            boczne kopniecie
+    fire + dol              podciecie
+    fire + tyl              obrot z bocznym kopnieciem
+    fire + gora + tyl       uderzenie do tylu, potem obrot
+
+EHB, HAM czy AGA?
+-----------------
+  EHB : 64 kolory z ditheringiem, czysty obraz, cienie; podczas
+        przewijania ok. 85-95% predkosci oryginalu (zmierzone na
+        68000; przy samej walce bez przewijania 100%).
+  HAM : gladsze tlo, szybciej, bez cieni, drobne smugi HAM obok
+        zawodnikow i cyfr punktow.
+  AGA : 256 kolorow: 0-15 zawodnicy, 16-127 tlo (paleta 24-bit
+        dobrana do obrazu), 128-255 te same kolory przyciemnione
+        (cienie). Pobieranie danych 32-bit (FMODE 1): obraz zajmuje
+        mniej czasu magistrali niz 6 planow EHB, wiec gra dziala co
+        najmniej tak szybko jak w EHB. Na OCS/ECS nie dziala.
+
+A1200 / A4000 / CD32
+--------------------
+  Tryby ehb i ham dzialaja na AGA tak samo jak na OCS/ECS. Latka:
+   - zeruje rejestry istniejace tylko w AGA (FMODE, BPLCON3, BPLCON4,
+     KILLEHB) - bez tego obraz moze byc znieksztalcony, jesli wczesniej
+     Workbench dzialal w trybie AGA (np. 256 kolorow),
+   - dziala z przeniesionym VBR (karty 68030/040/060 z bibliotekami
+     680x0, narzedzia typu VBRMove). Oryginalna gra w takiej sytuacji
+     zawiesza sie zaraz po starcie, bo zapisuje wektory przerwan pod
+     stale adresy. Na czas gry VBR jest ustawiany na 0, po wyjsciu
+     przywracany.
+
+  Workbench uruchom w zwyklym trybie PAL lub NTSC, a nie w trybie
+  Multiscan / DblPAL / Productivity - gra (jak oryginal) nie
+  przelacza trybu monitora.
+
+  Na 68040/68060 gra mozliwie nie ruszy (oryginalny kod z 1992 r. nie
+  byl na nie przygotowany).
+
+  CD32: gra potrzebuje plikow na dysku (np. CD32 z modulem SX-1 /
+  TF330) - wersji na plycie CD w tym zestawie nie ma.
+
+Stan testow
+-----------
+  A600 + Furia (68EC020) i A600 z 68000 + A6095, Kickstart 3.1
+  (EHB, HAM); WinUAE z AGA (A1200: tryb aga). Na prawdziwej A1200 /
+  A4000 / CD32 jeszcze niesprawdzone - wyniki mile widziane.
+
+Zawartosc
+---------
+  kokpatch.py         patcher + konwerter (jeden skrypt)
+  scripts/            moduly Pythona: dekoder OpalVision, konwerter
+                      EHB/HAM/AGA, paleta zawodnikow, pliki hunk
+  patches/*.s         zrodla latek (asembler 68000, vasm)
+  patches/*.bin       zasemblowane latki (doklejane do programow)
+  patches/build.py    asembluje wszystkie latki (vasm)
+  LICENSE             licencja kodu latki
+
+  Pliki .bin mozna odtworzyc ze zrodel asemblerem vasm (vasmm68k_mot)
+  jednym poleceniem:
+    python3 patches/build.py [sciezka do vasmm68k_mot]
+  (tworzy wszystkie .bin i patches/layout.txt, identyczne bajt w bajt
+  z dolaczonymi).
+
+Autorzy
+-------
+  Latka: Leopold "Leon" Tupalski (TULAB) i Claude (model AI firmy
+  Anthropic) - wspolpraca w trybie human-in-the-loop: Claude napisal
+  kod latek w asemblerze 68000, konwerter grafiki i narzedzia
+  testowe; Leon wyznaczal kierunek, testowal na prawdziwym sprzecie
+  (A600) i w WinUAE i wylapywal bledy.
+
+  Oryginalna gra: King of Karate (c) 1992 Centaur
+  kod: Marc Hawlitzeck, grafika: Greg Niles (Saddleback Graphics),
+  muzyka: Bjorn Lynne (Cine Sound), modul tytulowy: DENS Design.

@@ -1,0 +1,17 @@
+# Never commit files of the original game (c) 1992 Centaur
+KARATE
+TITLE
+HISCORE
+loader.exe
+KingOfKarate
+KingOfKarate.info
+*.dat
+*.k16
+*.bg
+*.adf
+*.lha
+*.zip
+
+# Python
+__pycache__/
+*.pyc

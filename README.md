@@ -44,11 +44,19 @@ Amiga chipset alone**: OCS, ECS or AGA.
 2. Run (the output directory must be a different one):
 
    ```
-   python3 kokpatch.py <original game dir> <output dir> [--mode ehb|ham|aga] [--title-mode ehb|ham|aga]
+   python3 kokpatch.py <original game dir> <output dir> [--mode ehb|ham|aga]
+                       [--title-mode ehb|ham|aga]
    ```
 
-   On Windows use `python` instead of `python3`, e.g.
-   `python kokpatch.py C:\KoK_original C:\KoK_AGA --mode aga`.
+   Examples (on Windows use `python` instead of `python3`):
+
+   | Shell | Command |
+   |---|---|
+   | Windows CMD / PowerShell | `python kokpatch.py C:\KoK_original C:\KoK_AGA --mode aga` |
+   | Git Bash (MINGW64) on Windows | `python kokpatch.py /c/KoK_original /c/KoK_AGA --mode aga` |
+   | Linux / macOS | `python3 kokpatch.py ~/KoK_original ~/KoK_AGA --mode aga` |
+
+   In Bash a backslash is an escape character – use `/c/...` or `C:/...` paths there.
 3. Copy the output directory to the Amiga and start the **KingOfKarate** icon.
 
 See [ReadMe.txt](ReadMe.txt) for controls and details, [CzytajTo.txt](CzytajTo.txt) in Polish.
